@@ -12,6 +12,7 @@ $RET_SIGN_UP_FAILED = -3;
 $RET_NULL_PARAM = -4;
 $RET_EMAIL_NOT_FOUND = -5;
 $RET_INVALID_PASSWORD = -6;
+$RET_ACTIVATION_CODE_GENERATION_FAILED = -7;
 
 $status = array(
     $RET_SUCCESS => "Success",
@@ -21,6 +22,7 @@ $status = array(
     $RET_NULL_PARAM => "Missing information",
     $RET_EMAIL_NOT_FOUND => "Email not found",
     $RET_INVALID_PASSWORD => "Invalid password",
+    $RET_ACTIVATION_CODE_GENERATION_FAILED => "Activation code generation failed",
 );
 
 ?>

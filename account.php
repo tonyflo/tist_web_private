@@ -33,6 +33,90 @@ function pw_hash($password)
     return $hashed;
 } //end pw_hash()
 
+ /*
+ * @brief Checks for an email with a *.edu domain
+ * @param email an email address
+ */
+function is_edu_email_address($email)
+{
+   $domain_extension = substr($email, -4);
+   if($domain_extension == ".edu")
+   {
+      return true;
+   }
+   return false;
+}
+
+ /*
+ * @brief generate a 13 character activatioin code
+ * @param user_id user id
+ * @return a 13 character activation code
+ */
+function generate_activation_code($user_id, $db)
+{
+   $activation_code = uniqid();
+
+   $queryA="update CREDENTIALS set activation_code=? where user_id=?";
+   $sqlA=$db->prepare($queryA);
+   $sqlA->bind_param('si', $activation_code, $user_id);
+   $sqlA->execute();
+   $sqlA->free_result();
+
+   //check result is TRUE meaning the insert was successful
+   if($sqlA != TRUE)
+   {
+      //something went wrong when signing up
+      return $GLOBALS['RET_ACTIVATION_CODE_GENERATION_FAILED'];
+   }
+
+   return $activation_code;
+}
+
+ /*
+ * @brief Builds and sends an email to a new user
+ * @param email an email address
+ * @param user_id user id
+ */
+function send_new_user_email($email, $user_id, $db)
+{
+   $to      = $email;
+   $subject = 'Welcome to The Tist';
+   $message = '
+   <html>
+   <head>
+     <title>Welcome to The Tist</title>
+   </head>
+   <body>
+     <p>A common message to ever user goes here</p>
+   ';
+
+   if(is_edu_email_address($email))
+   {
+      $activation_code = generate_activation_code($user_id, $db);
+      $edu_message = '
+      <br>
+      <p>A specific message to only users with a *.edu address goes here</p>
+      <p>Below is your activation code</p>
+      <p><b>'.$activation_code.'</b></p>
+      <p>Click <a href="http://the-tist.com/confirmation.php?activation_code='.$activation_code.'">this</a> link to confirm your email address</p>
+      ';
+      $message = $message . $edu_message;
+   }
+
+   $message_bottom = '
+   </body>
+   </html>
+   ';
+   $message = $message . $message_bottom;
+
+   $headers  = 'MIME-Version: 1.0' . "\r\n";
+   $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+   $headers .= 'From: NickMathews@the-tist.com' . "\r\n" .
+    'Reply-To: NickMahtews@the-tist.com';
+
+   mail($to, $subject, $message, $headers);
+}
+
 /*************************************************************************
  * Public MySQL Functions
  ************************************************************************/
@@ -51,11 +135,11 @@ function pw_hash($password)
 function sign_in($email, $password, $db)
 {
    //query database for provided email
-   $query="select user_id, password from CREDENTIALS where email=?";
+   $query="select user_id, password, confirmed, activation_code from CREDENTIALS where email=?";
    $sql=$db->prepare($query);
    $sql->bind_param('s', $email);
    $sql->execute();
-   $sql->bind_result($user_id, $hash);
+   $sql->bind_result($user_id, $hash, $confirmed, $activation_code);
    $sql->fetch();
    $sql->free_result();
 
@@ -166,6 +250,9 @@ function sign_up($first_name, $last_name, $date_birth, $gender_id, $email, $pass
       //something went wrong when signing up
       return $GLOBALS['RET_SIGN_UP_FAILED'];
    }
+
+   //send new user email
+   send_new_user_email($email, $user_id, $db);
 
    //sign in as normal to get the user id
    return sign_in($email, $password, $db);
