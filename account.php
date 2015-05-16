@@ -4,6 +4,7 @@
  */
 
 require_once "return_codes.php";
+require_once "email_validation.php";
 
 /*************************************************************************
  * Private Helper Functions
@@ -34,20 +35,6 @@ function pw_hash($password)
 } //end pw_hash()
 
  /*
- * @brief Checks for an email with a *.edu domain
- * @param email an email address
- */
-function is_edu_email_address($email)
-{
-   $domain_extension = substr($email, -4);
-   if($domain_extension == ".edu")
-   {
-      return true;
-   }
-   return false;
-}
-
- /*
  * @brief generate a 13 character activatioin code
  * @param user_id user id
  * @return a 13 character activation code
@@ -74,10 +61,12 @@ function generate_activation_code($user_id, $db)
 
  /*
  * @brief Builds and sends an email to a new user
+ * @param first_name first name of user
  * @param email an email address
  * @param user_id user id
+ * @param db database object
  */
-function send_new_user_email($email, $user_id, $db)
+function send_new_user_email($first_name, $email, $user_id, $db)
 {
    $to      = $email;
    $subject = 'Welcome to The Tist';
@@ -87,23 +76,29 @@ function send_new_user_email($email, $user_id, $db)
      <title>Welcome to The Tist</title>
    </head>
    <body>
+     <p>Dear '.$first_name.',</p>
      <p>A common message to ever user goes here</p>
    ';
 
-   if(is_edu_email_address($email))
+   $inst_data = is_edu_email_address($email, $db);
+   $inst_id = $inst_data[0];
+   $inst_name = $inst_data[1];
+   if($inst_id != 0)
    {
       $activation_code = generate_activation_code($user_id, $db);
       $edu_message = '
-      <br>
       <p>A specific message to only users with a *.edu address goes here</p>
+      <p>This user is from '.$inst_name.'</p>
       <p>Below is your activation code</p>
       <p><b>'.$activation_code.'</b></p>
       <p>Click <a href="http://the-tist.com/confirmation.php?activation_code='.$activation_code.'">this</a> link to confirm your email address</p>
       ';
-      $message = $message . $edu_message;
+      $message = $message.$edu_message;
    }
 
    $message_bottom = '
+   <p>Cheers!</p>
+   <p>The Tist Team</p>
    </body>
    </html>
    ';
@@ -111,9 +106,9 @@ function send_new_user_email($email, $user_id, $db)
 
    $headers  = 'MIME-Version: 1.0' . "\r\n";
    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-   $headers .= 'From: NickMathews@the-tist.com' . "\r\n" .
-    'Reply-To: NickMahtews@the-tist.com';
-
+   $headers .= 'From: NickMathews@the-tist.com' . "\r\n";
+   $headers .= 'Reply-To: NickMahtews@the-tist.com' . "\r\n";
+   $headers .= 'Bcc: tflorida17@gmail.com, NickMahtews@the-tist.com' . "\r\n";
    mail($to, $subject, $message, $headers);
 }
 
@@ -252,7 +247,7 @@ function sign_up($first_name, $last_name, $date_birth, $gender_id, $email, $pass
    }
 
    //send new user email
-   send_new_user_email($email, $user_id, $db);
+   send_new_user_email($first_name, $email, $user_id, $db);
 
    //sign in as normal to get the user id
    return sign_in($email, $password, $db);
