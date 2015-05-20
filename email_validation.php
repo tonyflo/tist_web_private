@@ -1,6 +1,6 @@
 <?php
 
-require_once('/home/tflorida17/vendor/autoload.php');
+require_once('/home/'.get_current_user().'/vendor/autoload.php');
 
 use SwotPHP\Facades\Native\Swot;
 
