@@ -5,7 +5,8 @@
 <title>Welcome to The Tist</title>
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700' rel='stylesheet' type='text/css'>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style id="style-1-cropbar-clipper">
+
+ <style id="style-1-cropbar-clipper">
 .en-markup-crop-options {
     top: 18px ;
     left: 50% ;
@@ -18,14 +19,17 @@
 .en-markup-crop-options div div:first-of-type {
     margin-left: 0px ;
 }
-</style></head>
+</style> 
+</head>
+
+
 <body style="margin: 0px; padding: 0px;" class=" hasGoogleVoiceExt">
 	<table border="0" cellpadding="0" cellspacing="0" width="100%">	
 		<tbody><tr>
 			<td style="padding: 10px 0 30px 0;">
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
 					<tbody><tr>
-						<td align="center" bgcolor="#8a8" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
+						<td align="center" bgcolor="#060" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
 							<img src="img/The_Tist_Logo_1.png" alt="The Tist Logo" width="230" height="230" style="display: block;">
 						</td>
 					</tr>
@@ -88,11 +92,13 @@
 						</td>
 					</tr>
 					<tr>
-						<td bgcolor="#8a8" style="padding: 30px 30px 30px 30px;">
+						<td bgcolor="#060" style="padding: 30px 30px 30px 30px;">
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tbody><tr>
 									<td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;" width="75%">
-										&copy Science Share, LLC, 2015<br>
+										 <a style="color:white;" href="http://www.science-share.com">Science Share, LLC,</a><br>
+										<br>
+									 A Nick Mathews Production
 									</td>
 									<td align="right" width="25%">
 										<table border="0" cellpadding="0" cellspacing="0">
