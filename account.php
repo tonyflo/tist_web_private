@@ -74,7 +74,7 @@ function send_new_user_email($first_name, $email, $user_id, $db)
    <html>
    <head>
      <title>Welcome to The Tist</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
    </head>
 	<body style="margin: 0px; padding: 0px;" class=" hasGoogleVoiceExt">
 		<table border="0" cellpadding="0" cellspacing="0" width="100%">	
@@ -118,7 +118,7 @@ function send_new_user_email($first_name, $email, $user_id, $db)
 													<table border="0" cellpadding="0" cellspacing="0" width="100%">
 														<tbody><tr>
 															<td>
-																<img src="http://www.workspace.the-tist.com/tist_web_private/img/rocket.png" alt="" width="100%" height="180" style="display: block;">
+																<img src="http://www.workspace.the-tist.com/tist_web_private/img/rocket.png" alt="Rocket Ship Picture" height="180" style="display: block;">
 															</td>
 														</tr>
 														<tr>
@@ -137,7 +137,7 @@ function send_new_user_email($first_name, $email, $user_id, $db)
 													<table border="0" cellpadding="0" cellspacing="0" width="100%">
 														<tbody><tr>
 															<td>
-																<img src="http://www.workspace.the-tist.com/tist_web_private/img/profile.png" alt="" width="100%" height="180" style="display: block;">
+																<img src="http://www.workspace.the-tist.com/tist_web_private/img/profile.png" alt="Profile Picture" height="180" style="display: block;">
 															</td>
 														</tr>
 														<tr>
