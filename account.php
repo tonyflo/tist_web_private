@@ -4,7 +4,7 @@
  */
 
 require_once "return_codes.php";
-require_once "email_validation.php";
+require_once "email.php";
 
 /*************************************************************************
  * Private Helper Functions
@@ -33,176 +33,6 @@ function pw_hash($password)
 
     return $hashed;
 } //end pw_hash()
-
- /*
- * @brief generate a 13 character activatioin code
- * @param user_id user id
- * @return a 13 character activation code
- */
-function generate_activation_code($user_id, $db)
-{
-   $activation_code = uniqid();
-
-   $queryA="update CREDENTIALS set activation_code=? where user_id=?";
-   $sqlA=$db->prepare($queryA);
-   $sqlA->bind_param('si', $activation_code, $user_id);
-   $sqlA->execute();
-   $sqlA->free_result();
-
-   //check result is TRUE meaning the insert was successful
-   if($sqlA != TRUE)
-   {
-      //something went wrong when signing up
-      return $GLOBALS['RET_ACTIVATION_CODE_GENERATION_FAILED'];
-   }
-
-   return $activation_code;
-}
-
- /*
- * @brief Builds and sends an email to a new user
- * @param first_name first name of user
- * @param email an email address
- * @param user_id user id
- * @param db database object
- */
-function send_new_user_email($first_name, $email, $user_id, $db)
-{
-   $to      = $email;
-   $subject = 'Welcome to The Tist';
-   $message = '
-   <html>
-   <head>
-     <title>Welcome to The Tist</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-   </head>
-	<body style="margin: 0px; padding: 0px;" class=" hasGoogleVoiceExt">
-		<table border="0" cellpadding="0" cellspacing="0" width="100%">	
-		<tbody><tr>
-			<td style="padding: 10px 0 30px 0;">
-				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
-					<tbody><tr>
-						<td align="center" bgcolor="#060" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
-							<img src="http://www.workspace.the-tist.com/tist_web_private/img/The_Tist_Logo_1.png" alt="The Tist Logo" width="230" height="230" style="display: block;">
-						</td>
-					</tr>
-					<tr>
-						<td bgcolor="#ffffff" style="padding: 40px 30px 40px 30px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="100%">
-								<tbody><tr>
-									<td style="color: #153643; font-family: Arial, sans-serif; font-size: 24px;">
-										<b>Welcome to The Tist!</b>
-									</td>
-								</tr>
-								<tr>
-									<td style="padding: 20px 0 30px 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
-										'.$first_name.', you are now part of a growing community of scientists communicating with the public about their research.  
-										This website allows the general public an opportunity to hear about science news and methods from the scientists themselves, and it provides all of the tools necessary for scientists to communicate their research clearly.
-									</td>
-								</tr>
-   ';
-
-   $inst_data = is_edu_email_address($email, $db);
-   $inst_id = $inst_data[0];
-   $inst_name = $inst_data[1];
-   if($inst_id != 0)
-   {
-      $activation_code = generate_activation_code($user_id, $db);
-      $edu_message = '
-	  
-								<tr>
-									<td>
-										<table border="0" cellpadding="0" cellspacing="0" width="100%">
-											<tbody><tr>
-												<td width="260" valign="top">
-													<table border="0" cellpadding="0" cellspacing="0" width="100%">
-														<tbody><tr>
-															<td>
-																<img src="http://www.workspace.the-tist.com/tist_web_private/img/rocket.png" alt="Rocket Ship Picture" height="180" style="display: block;">
-															</td>
-														</tr>
-														<tr>
-															<td style="padding: 25px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px; display: block;">
-															Congratulations!  Your account is almost verified.  
-															You simply need to verify your '.$inst_name.' email address here. 
-															Your Activation Code is <a href="http://the-tist.com/confirmation.php?activation_code='.$activation_code.'">'.$activation_code.'</a>
-															</td>
-														</tr>
-													</tbody></table>
-												</td>
-												<td style="font-size: 0; line-height: 0;" width="20">
-													&nbsp;
-												</td>
-												<td width="260" valign="top">
-													<table border="0" cellpadding="0" cellspacing="0" width="100%">
-														<tbody><tr>
-															<td>
-																<img src="http://www.workspace.the-tist.com/tist_web_private/img/profile.png" alt="Profile Picture" height="180" style="display: block;">
-															</td>
-														</tr>
-														<tr>
-															<td style="padding: 25px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;">
-															Next, you can create a profile page where other colleagues, friends, family and fans can find you.  Go ahead! Start building on your Tist profile!
-															</td>
-														</tr>
-													</tbody></table>
-												</td>
-											</tr>
-										</tbody></table>
-									</td>
-								</tr>
-      ';
-      $message = $message.$edu_message;
-   }
-   $message_bottom = '
-								</tbody></table>
-						</td>
-					</tr>
-					<tr>
-						<td bgcolor="#060" style="padding: 30px 30px 30px 30px;">
-							<table border="0" cellpadding="0" cellspacing="0" width="100%">
-								<tbody><tr>
-									<td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;" width="75%">
-										 <a style="color:white;" href="http://www.science-share.com">Science Share, LLC,</a><br>
-										<br>
-									 A Nick Mathews Production
-									</td>
-									<td align="right" width="25%">
-										<table border="0" cellpadding="0" cellspacing="0">
-											<tbody><tr>
-												<td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
-													<a href="https://plus.google.com/+ScienceShareReading/posts" style="color: #ffffff;">
-														<img src="http://www.workspace.the-tist.com/tist_web_private/img/googleplus.png" alt="Google Plus" width="38" height="38" style="display: block;" border="0">
-													</a>
-												</td>
-												<td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
-												<td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
-													<a href="https://www.facebook.com/itsallinthetist" style="color: #ffffff;">
-														<img src="http://www.workspace.the-tist.com/tist_web_private/img/facebook.png" alt="Facebook" width="38" height="38" style="display: block;" border="0">
-													</a>
-												</td>
-											</tr>
-										</tbody></table>
-									</td>
-								</tr>
-							</tbody></table>
-						</td>
-					</tr>
-				</tbody></table>
-			</td>
-		</tr>
-	</tbody></table>
-</body></html>
-   ';
-   $message = $message . $message_bottom;
-
-   $headers  = 'MIME-Version: 1.0' . "\r\n";
-   $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-   $headers .= 'From: NickMathews@the-tist.com' . "\r\n";
-   $headers .= 'Reply-To: NickMathews@the-tist.com' . "\r\n";
-   $headers .= 'Bcc: tflorida17@gmail.com, NickMathews@the-tist.com' . "\r\n";
-   mail($to, $subject, $message, $headers);
-}
 
 /*************************************************************************
  * Public MySQL Functions
@@ -339,7 +169,11 @@ function sign_up($first_name, $last_name, $date_birth, $gender_id, $email, $pass
    }
 
    //send new user email
-   send_new_user_email($first_name, $email, $user_id, $db);
+   $status = send_new_user_email($first_name, $email, $user_id, $db);
+   if($status != 0)
+   {
+      //TODO: something went wrong. we need to react to it
+   }
 
    //sign in as normal to get the user id
    return sign_in($email, $password, $db);
