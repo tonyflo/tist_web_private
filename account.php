@@ -132,12 +132,12 @@ function sign_up($first_name, $last_name, $date_birth, $gender_id, $email, $pass
    }
 
    //get the date
-   $date = date("Y-m-d H:i:s");
+   $datetime = date("Y-m-d H:i:s");
 
    //the email address is available so proceed with creating account
    $queryB="insert into USER(first_name, last_name, date_birth, gender, datetime_created) values(?, ?, ?, ?, ?)";
    $sqlB=$db->prepare($queryB);
-   $sqlB->bind_param('sssis', $first_name, $last_name, $date_birth, $gender_id, $date);
+   $sqlB->bind_param('sssis', $first_name, $last_name, $date_birth, $gender_id, $datetime);
    $sqlB->execute();
    $sqlB->free_result();
 

@@ -13,6 +13,8 @@ $RET_NULL_PARAM = -4;
 $RET_EMAIL_NOT_FOUND = -5;
 $RET_INVALID_PASSWORD = -6;
 $RET_ACTIVATION_CODE_GENERATION_FAILED = -7;
+$RET_UNABLE_TO_CONFIRM_EMAIL = -8;
+$RET_ALREADY_CONFIRM_EMAIL = -9;
 
 $status = array(
     $RET_SUCCESS => "Success",
@@ -23,6 +25,8 @@ $status = array(
     $RET_EMAIL_NOT_FOUND => "Email not found",
     $RET_INVALID_PASSWORD => "Invalid password",
     $RET_ACTIVATION_CODE_GENERATION_FAILED => "Activation code generation failed",
+    $RET_UNABLE_TO_CONFIRM_EMAIL => "Unable to confirm email",
+    $RET_ALREADY_CONFIRM_EMAIL => "Email is already confirmed",
 );
 
 ?>

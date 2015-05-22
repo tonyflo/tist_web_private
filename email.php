@@ -5,6 +5,54 @@ require_once('/home/'.get_current_user().'/vendor/autoload.php');
 use SwotPHP\Facades\Native\Swot;
 
 /*
+ * @brief Compare activation code with the value in the db
+ * @param user_id user id
+ * @param activation_code activation code
+ * @param db database object
+ * @retval user_id if confirmed, error code otherwise
+ */
+function confirm_email($user_id, $activation_code, $db)
+{
+   if(	$user_id == null ||
+	$activation_code == null)
+   {
+      return $GLOBALS['RET_NULL_PARAM'];
+   }
+
+   // check if activation code has already been confirmed
+   $queryA="select * from INSTITUTION_MEMBER where user_id=? and activation_code=? and confirmed=1";
+   $sqlA=$db->prepare($queryA);
+   $sqlA->bind_param('is', $user_id, $activation_code);
+   $sqlA->execute();
+   $sqlA->store_result();
+   $numrowsA=$sqlA->num_rows;
+   $sqlA->free_result();
+
+   //the code has not been used if the query returns 0 matching rows
+   if($numrowsA != 0)
+   {
+      return $GLOBALS['RET_ALREADY_CONFIRM_EMAIL'];
+   }
+
+   // confirm the activation code
+   $query="update INSTITUTION_MEMBER set confirmed=1, datetime_confirmed=? where user_id=? and activation_code=?";
+   $sql=$db->prepare($query);
+   $sql->bind_param('sis', $datetime, $user_id, $activation_code);
+   $sql->execute();
+   $sql->store_result();
+   $numrows=$sql->affected_rows;
+   $sql->free_result();
+
+   //check if update was successful
+   if($numrows == 1)
+   {
+      //something went wrong when updating table
+      return $user_id;
+   }
+   return $GLOBALS['RET_UNABLE_TO_CONFIRM_EMAIL'];
+}
+
+/*
  * @brief Lookup institution in the database by name
  * @param institution_name Institution name
  * @param db Database object
@@ -155,7 +203,7 @@ function send_new_user_email($first_name, $email, $user_id, $db)
 															<td style="padding: 25px 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px; display: block;">
 															Congratulations!  Your account is almost verified.
 															You simply need to verify your '.$inst_name.' email address here.
-															Your Activation Code is <a href="http://the-tist.com/confirmation.php?activation_code='.$activation_code.'">'.$activation_code.'</a>
+															Your Activation Code is <a href="http://the-tist.com/confirmation.php?user_id='.$user_id.'&activation_code='.$activation_code.'">'.$activation_code.'</a>
 															</td>
 														</tr>
 													</tbody></table>
