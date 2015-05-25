@@ -158,7 +158,7 @@ function send_new_user_email($first_name, $email, $user_id, $db)
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border: 1px solid #cccccc; border-collapse: collapse;">
 					<tbody><tr>
 						<td align="center" bgcolor="#060" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
-							<img src="http://www.workspace.the-tist.com/tist_web_private/img/The_Tist_Logo_1.png" alt="The Tist Logo" width="230" height="230" style="display: block;">
+							<img src="http://www.the-tist.com/tist_web_private/img/The_Tist_Logo_1.png" alt="The Tist Logo" width="230" height="230" style="display: block;">
 						</td>
 					</tr>
 					<tr>
@@ -196,7 +196,7 @@ function send_new_user_email($first_name, $email, $user_id, $db)
 													<table border="0" cellpadding="0" cellspacing="0" width="100%">
 														<tbody><tr>
 															<td>
-																<img src="http://www.workspace.the-tist.com/tist_web_private/img/rocket.png" alt="Rocket Ship Picture" height="180" style="display: block;">
+																<img src="http://www.the-tist.com/tist_web_private/img/rocket.png" alt="Rocket Ship Picture" height="180" style="display: block;">
 															</td>
 														</tr>
 														<tr>
@@ -215,7 +215,7 @@ function send_new_user_email($first_name, $email, $user_id, $db)
 													<table border="0" cellpadding="0" cellspacing="0" width="100%">
 														<tbody><tr>
 															<td>
-																<img src="http://www.workspace.the-tist.com/tist_web_private/img/profile.png" alt="Profile Picture" height="180" style="display: block;">
+																<img src="http://www.the-tist.com/tist_web_private/img/profile.png" alt="Profile Picture" height="180" style="display: block;">
 															</td>
 														</tr>
 														<tr>
@@ -250,13 +250,13 @@ function send_new_user_email($first_name, $email, $user_id, $db)
 											<tbody><tr>
 												<td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
 													<a href="https://plus.google.com/+ScienceShareReading/posts" style="color: #ffffff;">
-														<img src="http://www.workspace.the-tist.com/tist_web_private/img/googleplus.png" alt="Google Plus" width="38" height="38" style="display: block;" border="0">
+														<img src="http://www.the-tist.com/tist_web_private/img/googleplus.png" alt="Google Plus" width="38" height="38" style="display: block;" border="0">
 													</a>
 												</td>
 												<td style="font-size: 0; line-height: 0;" width="20">&nbsp;</td>
 												<td style="font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;">
 													<a href="https://www.facebook.com/itsallinthetist" style="color: #ffffff;">
-														<img src="http://www.workspace.the-tist.com/tist_web_private/img/facebook.png" alt="Facebook" width="38" height="38" style="display: block;" border="0">
+														<img src="http://www.the-tist.com/tist_web_private/img/facebook.png" alt="Facebook" width="38" height="38" style="display: block;" border="0">
 													</a>
 												</td>
 											</tr>
