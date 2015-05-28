@@ -52,12 +52,16 @@ function pw_hash($password)
 function sign_in($email, $password, $db)
 {
    //query database for provided email
-   $query="select user_id, password, confirmed, activation_code from CREDENTIALS where email=?";
+   $query="select USER.user_id, CREDENTIALS.password, USER.first_name, USER.last_name, CREDENTIALS.email from CREDENTIALS join USER on USER.user_id=CREDENTIALS.user_id where email=?";
    $sql=$db->prepare($query);
    $sql->bind_param('s', $email);
    $sql->execute();
-   $sql->bind_result($user_id, $hash, $confirmed, $activation_code);
-   $sql->fetch();
+   $sql->bind_result($user_id, $hash, $first_name, $last_name, $email);
+   $user_data=array();
+   while($sql->fetch())
+   {
+		array_push($user_data, $user_id, $first_name, $last_name, $email);
+   }
    $sql->free_result();
 
    //try to convert user_id to an int; if fails, value will be 0; assume credentials are wrong
@@ -72,16 +76,20 @@ function sign_in($email, $password, $db)
       if ($valid != 0)
       {
         //the provided password was wrong
-        return $GLOBALS['RET_INVALID_PASSWORD'];
+        $user_data=array();
+        array_push($user_data, $GLOBALS['RET_INVALID_PASSWORD']);
+        return $user_data;
       }
 
       //the provided password was correct so return the valid user_id
-      return $user_id;
+      return $user_data;
+      //TODO: no error checking
    }
    else
    {
       //the email was not found
-      return $GLOBALS['RET_EMAIL_NOT_FOUND'];
+      array_push($user_data, $GLOBALS['RET_EMAIL_NOT_FOUND']);
+      return $user_data;
    }
 } //end sign_in()
 
