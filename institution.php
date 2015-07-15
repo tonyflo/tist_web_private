@@ -1,7 +1,5 @@
 <?php
 
-include "credentials.php";
-
 /* @brief Get a list of state abbreviations
  * @param db Database object
  * @echo a list of options for the select element
@@ -65,5 +63,24 @@ function get_institution_data($institution_id, $db)
 	$sql->free_result();
 	return $inst;
 	//TODO: no error checking
+}
+
+/*
+ * @brief Get a list of institutions in alphabetical that the user is a confirmed member of
+ */
+function get_list_of_user_institutions($user_id, $db) {
+	//query database for list of institutions
+	$query="select INSTITUTION.institution_id, INSTITUTION.name from USER join INSTITUTION_MEMBER on USER.user_id = INSTITUTION_MEMBER.user_id join CREDENTIALS on CREDENTIALS.user_id = USER.user_id join INSTITUTION on INSTITUTION.institution_id = INSTITUTION_MEMBER.institution_id where INSTITUTION_MEMBER.confirmed=1 AND USER.user_id=? order by INSTITUTION.name asc";
+	$sql=$db->prepare($query);
+	$sql->bind_param('i', $user_id);
+	$sql->execute();
+	$sql->bind_result($inst_id, $inst_name);
+	echo "<option value='-1'>Select one of your institutions</option>\n";
+	while($sql->fetch())
+	{
+		echo "\t<option value=".$inst_id.">".$inst_name."</option>\n";
+	}
+	$sql->free_result();
+
 }
 ?>

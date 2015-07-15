@@ -38,7 +38,7 @@ function pw_hash($password)
  * Public MySQL Functions
  ************************************************************************/
 
- /*
+/*
  * @brief Allows a user to sign into their account
  * @param email User's email
  * @param password A password between 6 and 255 characters

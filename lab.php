@@ -16,6 +16,7 @@ function get_list_of_labs($institution_id, $db)
 	$sql->execute();
 	$sql->bind_result($lab_id, $lab_name);
 	$labs=array();
+	array_push($labs, array(-1, "Select existing lab"));
 	while($sql->fetch())
 	{
 		array_push($labs, array($lab_id, $lab_name));
@@ -54,10 +55,9 @@ function get_list_of_user_labs($user_id, $db) {
  *
  * @param db the database object
  *
- * TODO
  * @retval The user's id associated with a valid email and password
- * @retval RET_EMAIL_NOT_FOUND if the email was not found in the database
- * @retval RET_INVALID_PASSWORD if the password is wrong
+ * @retval RET_LAB_ALREADY_EXISTS if the lab already exists by name
+ * @retval RET_LAB_CREATION_FAILED if an unknown error occured when inserting the new lab
  */
 function new_lab($lab_name, $date_founded, $mission_statement, $lab_link, $institution_id, $user_id, $db)
 {
@@ -82,7 +82,7 @@ function new_lab($lab_name, $date_founded, $mission_statement, $lab_link, $insti
    if($numrowsA != 0)
    {
       //the lab already exists so return error code
-      return $GLOBALS['RET_EMAIL_NOT_AVAILABLE'];
+      return $GLOBALS['RET_LAB_ALREADY_EXISTS'];
    }
 
    //get the date
@@ -102,7 +102,7 @@ function new_lab($lab_name, $date_founded, $mission_statement, $lab_link, $insti
    if($sqlB != TRUE || $lab_id <= 0)
    {
       //something went wrong when creating lab
-      return $GLOBALS['RET_SIGN_UP_FAILED'];
+      return $GLOBALS['RET_LAB_CREATION_FAILED'];
    }
 } //end new_lab()
 
