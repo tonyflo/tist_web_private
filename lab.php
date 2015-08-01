@@ -106,4 +106,27 @@ function new_lab($lab_name, $date_founded, $mission_statement, $lab_link, $insti
    }
 } //end new_lab()
 
+/* @brief Query the database for information about an lab
+ * @param lab_id an lab id
+ * @param db database object
+ * @retval a json encoded array of info about the lab, or error code
+ */
+function get_lab_data($lab_id, $db)
+{
+	//query database for lab info  TODO Join to get the institution name
+	$query="select INSTITUTION.name, LAB.name, LAB.date_founded, LAB.picture_logo, LAB.mission_statement, LAB.link_website, LAB.nickname from LAB inner join INSTITUTION on LAB.institution_id = INSTITUTION.institution_id where lab_id=?;";
+	$sql=$db->prepare($query);
+	$sql->bind_param('i', $lab_id);
+	$sql->execute();
+	$sql->bind_result($institution_name, $lab_name, $date_founded, $picture_logo, $mission_statement, $link_website, $nickname);
+	$lab=array();
+	while($sql->fetch())
+	{
+		array_push($lab, $institution_name, $lab_name, $date_founded, $picture_logo, $mission_statement, $link_website, $nickname);
+	}
+	$sql->free_result();
+	return $lab;
+	//TODO: no error checking
+}
+
 ?>
