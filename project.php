@@ -111,6 +111,14 @@ function new_project($project_name, $date_start, $summary_science, $summary_impa
       // return error code
       return $lab_member_id;
    }
+
+   // associate user with project
+   $project_member_id = associate_user_with_project($user_id, $project_id, $db);
+   if($project_member_id <= 0)
+   {
+      // return error code
+      return $project_member_id;
+   }
 } //end new_project()
 
 /*
@@ -162,6 +170,81 @@ function associate_user_with_lab($user_id, $lab_id, $db) {
    return $lab_member_id;
 }
 
+/*
+ * @brief Associates a user with a project
+ */
+function join_project($job_title, $discipline_id, $contribution_description, $date_start, $date_end, $user_id, $project_id, $lab_id, $db) {
+   //get the date
+   $datetime = date("Y-m-d H:i:s");
+
+   // Check for NULL values
+   if(	$job_title == null ||
+	$discipline_id == null ||
+	$contribution_description == null ||
+	$date_start == null ||
+	$project_id == null ||
+	$lab_id == null)
+   {
+      return $GLOBALS['RET_NULL_PARAM'];
+   }
+
+   // get project_lab_id given project_id and lab_id
+   $query="select project_lab_id from PROJECT_LAB where project_id=? and lab_id=?";
+   $sql=$db->prepare($query);
+   $sql->bind_param('ii', $project_id, $lab_id);
+   $sql->execute();
+   $sql->bind_result($pro_lab_id);
+   $project_lab_id=0;
+   while($sql->fetch()) {
+      $project_lab_id=$pro_lab_id;
+      break;
+   }
+   $sql->free_result();
+
+   if($project_lab_id==0) {
+      return $GLOBALS['RET_PROJECT_LAB_CON_FAILURE'];
+
+   }
+
+   // get lab_member_id given user_id and lab_id
+   $queryC="select lab_member_id from LAB_MEMBER where user_id=? and lab_id=?";
+   $sqlC=$db->prepare($queryC);
+   $sqlC->bind_param('ii', $user_id, $lab_id);
+   $sqlC->execute();
+   $sqlC->bind_result($lab_mem_id);
+   $lab_member_id=0;
+   while($sqlC->fetch()) {
+      $lab_member_id=$lab_mem_id;
+      break;
+   }
+   $sqlC->free_result();
+
+   // if lab_member_id is null, this user wants to join the lab too
+   if($lab_member_id <= 0)
+   {
+      $lab_member_id = associate_user_with_lab($user_id, $lab_id, $db);
+   }
+   if($lab_member_id <= 0)
+   {
+      // return error code
+      return $lab_member_id;
+   }
+
+   $queryD="insert into PROJECT_MEMBER(lab_member_id, project_lab_id, discipline_id, job_title, contribution_description, date_start, date_end, datetime_created) values(?, ?, ?, ?, ?, ?, ?, ?)";
+   $sqlD=$db->prepare($queryD);
+   $sqlD->bind_param('iiisssss', $lab_member_id, $project_lab_id, $discipline_id, $job_title, $contribution_description, $date_start, $date_end, $datetime);
+   $sqlD->execute();
+   $sqlD->free_result();
+
+   //Note: no unique id for PROJECT_MEMBER table
+
+   //check result is TRUE meaning the insert was successful
+   if($sqlD != TRUE)
+   {
+      return $GLOBALS['RET_PROJECT_MEMBER_FAILURE'];
+   }
+   return true;
+}
 
 
 /* @brief Get a list of project states
@@ -173,7 +256,6 @@ function get_list_of_project_states($db)
 	//query database for list states
 	$query="select * from PROJECT_STATE order by state_id asc";
 	$sql=$db->prepare($query);
-
 	$sql->execute();
 	$sql->bind_result($state_id, $state);
 	echo "<option value='-1'>Select the phase</option>\n";

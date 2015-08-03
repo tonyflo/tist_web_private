@@ -23,6 +23,8 @@ $RET_PROJECT_CREATION_FAILURE = -14;
 $RET_PROJECT_ALREADY_EXISTS = -15;
 $RET_LAB_ALREADY_EXISTS = -16;
 $RET_LAB_CREATION_FAILED = -17;
+$RET_PROJECT_MEMBER_FAILURE = -18;
+$RET_PROJECT_LAB_CON_FAILURE = -19;
 
 $status = array(
     $RET_SUCCESS => "Success",
@@ -38,11 +40,13 @@ $status = array(
     $RET_NOT_AN_INSTITUTION_EMAIL => "Not a valid institutional email",
     $RET_EMAIL_INSTITUTION_MISMATCH => "Email does not match selected institution",
     $RET_PROJECT_LAB_FAILURE => "Unable to associate project with lab",
-    $RET_LAB_MEMBER_FAILURE => "Unable to associate user with member",
+    $RET_LAB_MEMBER_FAILURE => "Unable to associate user with lab",
     $RET_PROJECT_CREATION_FAILURE => "Unable to create the project",
     $RET_PROJECT_ALREADY_EXISTS => "Project already exists at this lab",
     $RET_LAB_ALREADY_EXISTS => "Lab already exists at this institution",
-    $RET_LAB_CREATION_FAILED => "Unale to create the lab",
+    $RET_LAB_CREATION_FAILED => "Unable to create the lab",
+    $RET_PROJECT_MEMBER_FAILURE => "Unable to associate the user with project",
+    $RET_PROJECT_LAB_CON_FAILURE => "No relationship between project and lab",
 );
 
 ?>

@@ -30,7 +30,7 @@ function get_list_of_labs($institution_id, $db)
  * @brief Get a list of labs in alphabetical that the user is a confirmed member of
  */
 function get_list_of_user_labs($user_id, $db) {
-	//query database for list of institutions
+	//query database for list of labs that a user belongs to at an institution
 	$query="select LAB.lab_id, LAB.name from USER join LAB_MEMBER on USER.user_id = LAB_MEMBER.user_id join LAB on LAB.lab_id = LAB_MEMBER.lab_id where USER.user_id=? order by LAB.name asc";
 	$sql=$db->prepare($query);
 	$sql->bind_param('i', $user_id);
@@ -55,7 +55,7 @@ function get_list_of_user_labs($user_id, $db) {
  *
  * @param db the database object
  *
- * @retval The user's id associated with a valid email and password
+ * @retval The new lab id
  * @retval RET_LAB_ALREADY_EXISTS if the lab already exists by name
  * @retval RET_LAB_CREATION_FAILED if an unknown error occured when inserting the new lab
  */
@@ -104,6 +104,7 @@ function new_lab($lab_name, $date_founded, $mission_statement, $lab_link, $insti
       //something went wrong when creating lab
       return $GLOBALS['RET_LAB_CREATION_FAILED'];
    }
+   return $lab_id;
 } //end new_lab()
 
 /* @brief Query the database for information about an lab
